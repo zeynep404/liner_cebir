@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Veri Analizi - Dis Ticaret</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f4f4f4; }
+        .menu { background: #2c3e50; padding: 15px; text-align: center; }
+        .menu a { color: white; text-decoration: none; padding: 12px 25px; margin: 0 5px; display: inline-block; }
+        .menu a:hover { background: #34495e; border-radius: 5px; }
+        .menu a.active { background: #3498db; border-radius: 5px; }
+        .container { max-width: 1100px; margin: 20px auto; padding: 0 15px; }
+        h2 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 8px; }
+        .grafik { background: white; border-radius: 8px; padding: 15px; margin: 20px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; }
+        .grafik img { max-width: 100%; height: auto; }
+        table { width: 100%; border-collapse: collapse; background: white; margin: 20px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        th { background: #2c3e50; color: white; padding: 10px; text-align: left; font-size: 13px; }
+        td { padding: 8px 10px; border-bottom: 1px solid #eee; font-size: 13px; }
+        tr:hover { background: #f5f5f5; }
+        .tablo-ici { display: flex; gap: 20px; flex-wrap: wrap; }
+        .tablo-ici > div { flex: 1; min-width: 300px; }
+        .footer { background: #2c3e50; color: white; text-align: center; padding: 15px; margin-top: 30px; font-size: 13px; }
+        .kirmizi { color: red; font-weight: bold; }
+        .yesil { color: green; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="menu">
+    <a href="/">Ana Sayfa</a>
+    <a href="/analiz" class="active">Veri Analizi</a>
+    <a href="/karar">Karar Destek</a>
+    <a href="/sonuc">Sonuclar</a>
+</div>
+
+<div class="container">
+    <h2>Yillik Dis Ticaret Verileri</h2>
+
+    <table>
+        <tr>
+            <th>Yil</th>
+            <th>Ihracat (Milyon $)</th>
+            <th>Ithalat (Milyon $)</th>
+            <th>Ticaret Dengesi</th>
+            <th>Ticaret Hacmi</th>
+        </tr>
+        {% for satir in yillik %}
+        <tr>
+            <td><b>{{ satir.Yil }}</b></td>
+            <td>{{ "{:,.0f}".format(satir.Ihracat) }}</td>
+            <td>{{ "{:,.0f}".format(satir.Ithalat) }}</td>
+            <td class="{% if satir.Denge < 0 %}kirmizi{% else %}yesil{% endif %}">
+                {{ "{:,.0f}".format(satir.Denge) }}
+            </td>
+            <td>{{ "{:,.0f}".format(satir.Hacim) }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <div class="grafik">
+        <h2>Ihracat Trendi</h2>
+        <img src="{{ url_for('static', filename='ihracat_trend.png') }}" alt="Ihracat">
+    </div>
+
+    <div class="grafik">
+        <h2>Ithalat Trendi</h2>
+        <img src="{{ url_for('static', filename='ithalat_trend.png') }}" alt="Ithalat">
+    </div>
+
+    <div class="grafik">
+        <h2>Ticaret Dengesi</h2>
+        <img src="{{ url_for('static', filename='ticaret_dengesi.png') }}" alt="Denge">
+    </div>
+
+    <h2>2024 Yili Ulke Siralamasi</h2>
+    <div class="tablo-ici">
+        <div>
+            <table>
+                <tr><th>#</th><th>Ulke</th><th>Ihracat</th></tr>
+                {% for satir in ihracat_sira %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ satir.Ulke }}</td>
+                    <td><b>{{ "{:,.0f}".format(satir.Ihracat) }}</b></td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div>
+            <table>
+                <tr><th>#</th><th>Ulke</th><th>Ithalat</th></tr>
+                {% for satir in ithalat_sira %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ satir.Ulke }}</td>
+                    <td><b>{{ "{:,.0f}".format(satir.Ithalat) }}</b></td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+    <h2>Urun Kategorileri (2024)</h2>
+    <table>
+        <tr><th>#</th><th>Urun</th><th>Ihracat</th><th>Ithalat</th></tr>
+        {% for satir in urunler %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td><b>{{ satir.Urun }}</b></td>
+            <td>{{ "{:,.0f}".format(satir.Ihracat) }}</td>
+            <td>{{ "{:,.0f}".format(satir.Ithalat) }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<div class="footer">
+    <p>Linear Cebir Donem Projesi &copy; 2025</p>
+</div>
+
+</body>
+</html>

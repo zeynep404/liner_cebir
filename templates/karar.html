@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Karar Destek - Dis Ticaret</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f4f4f4; }
+        .menu { background: #2c3e50; padding: 15px; text-align: center; }
+        .menu a { color: white; text-decoration: none; padding: 12px 25px; margin: 0 5px; display: inline-block; }
+        .menu a:hover { background: #34495e; border-radius: 5px; }
+        .menu a.active { background: #3498db; border-radius: 5px; }
+        .container { max-width: 800px; margin: 20px auto; padding: 0 15px; }
+        h2 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 8px; }
+        .form-kutu { background: white; border-radius: 8px; padding: 25px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin: 20px 0; }
+        label { display: block; margin: 10px 0 5px; font-weight: bold; color: #333; }
+        select, input[type=submit] { width: 100%; padding: 10px; margin: 5px 0 15px; border: 1px solid #ddd; border-radius: 5px; font-size: 15px; }
+        input[type=submit] { background: #3498db; color: white; border: none; cursor: pointer; font-weight: bold; }
+        input[type=submit]:hover { background: #2980b9; }
+        .sonuc { background: white; border-radius: 8px; padding: 20px; margin: 20px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .sonuc h3 { color: #2c3e50; margin-top: 0; }
+        .degerler { display: flex; gap: 15px; flex-wrap: wrap; margin: 15px 0; }
+        .deger { flex: 1; min-width: 150px; text-align: center; padding: 15px; background: #f8f9fa; border-radius: 8px; }
+        .deger .sayi { font-size: 22px; font-weight: bold; }
+        .deger .etiket { font-size: 12px; color: #666; }
+        .risk { width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 10px auto; font-size: 28px; font-weight: bold; color: white; }
+        .oneriler { background: #f0f8ff; border-left: 4px solid #3498db; padding: 12px 15px; margin: 10px 0; }
+        .oneriler li { margin: 8px 0; }
+        .footer { background: #2c3e50; color: white; text-align: center; padding: 15px; margin-top: 30px; font-size: 13px; }
+    </style>
+</head>
+<body>
+
+<div class="menu">
+    <a href="/">Ana Sayfa</a>
+    <a href="/analiz">Veri Analizi</a>
+    <a href="/karar" class="active">Karar Destek</a>
+    <a href="/sonuc">Sonuclar</a>
+</div>
+
+<div class="container">
+    <h2>Karar Destek Sistemi</h2>
+    <p>Ulke ve urun kategorisi secerek ticaret potansiyelini gorum.</p>
+
+    <div class="form-kutu">
+        <form method="POST">
+            <label>Ulke Seciniz:</label>
+            <select name="ulke" required>
+                <option value="">-- Ulke Secin --</option>
+                {% for ulke in ulkeler %}
+                <option value="{{ ulke }}" {% if sonuc and sonuc.ulke == ulke %}selected{% endif %}>{{ ulke }}</option>
+                {% endfor %}
+            </select>
+
+            <label>Urun Kategorisi:</label>
+            <select name="urun" required>
+                <option value="">-- Urun Secin --</option>
+                {% for urun in urunler %}
+                <option value="{{ urun }}" {% if sonuc and sonuc.urun == urun %}selected{% endif %}>{{ urun }}</option>
+                {% endfor %}
+            </select>
+
+            <input type="submit" value="Analiz Et">
+        </form>
+    </div>
+
+    {% if sonuc %}
+    <div class="sonuc">
+        <h3>Analiz Sonucu: {{ sonuc.ulke }} - {{ sonuc.urun }}</h3>
+
+        <div class="degerler">
+            <div class="deger">
+                <div class="sayi" style="color: #3498db;">{{ "{:,.0f}".format(sonuc.son_ihracat) }}</div>
+                <div class="etiket">Son Ihracat (Milyon $)</div>
+            </div>
+            <div class="deger">
+                <div class="sayi" style="color: #e74c3c;">{{ "{:,.0f}".format(sonuc.son_ithalat) }}</div>
+                <div class="etiket">Son Ithalat (Milyon $)</div>
+            </div>
+            <div class="deger">
+                <div class="sayi" style="color: #27ae60;">{{ "{:,.0f}".format(sonuc.potansiyel) }}</div>
+                <div class="etiket">Tahmini Potansiyel (Milyon $)</div>
+            </div>
+            <div class="deger">
+                <div class="sayi" style="color: #8e44ad;">%{{ sonuc.buyume_orani }}</div>
+                <div class="etiket">Buyume Orani</div>
+            </div>
+        </div>
+
+        <h4>Risk Analizi</h4>
+        <div style="text-align: center;">
+            <div class="risk" style="background: {{ sonuc.risk_class }};">
+                {{ sonuc.risk_skoru|int }}
+            </div>
+            <p style="font-weight: bold; color: {{ sonuc.risk_class }};">{{ sonuc.risk_seviye }} Risk</p>
+            <p style="font-size: 13px; color: #666;">Urunun bu ulkedeki payi: %{{ sonuc.urun_payi }}</p>
+        </div>
+
+        <h4>Stratejik Oneriler</h4>
+        <div class="oneriler">
+            <ol>
+                {% for oneri in sonuc.oneriler %}
+                <li>{{ oneri }}</li>
+                {% endfor %}
+            </ol>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<div class="footer">
+    <p>Linear Cebir Donem Projesi &copy; 2025</p>
+</div>
+
+</body>
+</html>

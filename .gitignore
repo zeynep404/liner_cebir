@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+*.png
+rapor/rapor.docx
+venv/
+.env
+*.egg-info/

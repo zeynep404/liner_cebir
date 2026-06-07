@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Sonuclar - Dis Ticaret</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f4f4f4; }
+        .menu { background: #2c3e50; padding: 15px; text-align: center; }
+        .menu a { color: white; text-decoration: none; padding: 12px 25px; margin: 0 5px; display: inline-block; }
+        .menu a:hover { background: #34495e; border-radius: 5px; }
+        .menu a.active { background: #3498db; border-radius: 5px; }
+        .container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
+        h2 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 8px; }
+        h3 { color: #2c3e50; }
+        .kutu { background: white; border-radius: 8px; padding: 20px; margin: 20px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .grafik { background: white; border-radius: 8px; padding: 15px; margin: 20px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; }
+        .grafik img { max-width: 100%; height: auto; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        th { background: #2c3e50; color: white; padding: 8px; text-align: left; font-size: 13px; }
+        td { padding: 7px 8px; border-bottom: 1px solid #eee; font-size: 13px; }
+        tr:hover { background: #f5f5f5; }
+        .footer { background: #2c3e50; color: white; text-align: center; padding: 15px; margin-top: 30px; font-size: 13px; }
+        .oneri { margin: 8px 0; padding: 8px; border-left: 3px solid #3498db; background: #f8f9fa; }
+    </style>
+</head>
+<body>
+
+<div class="menu">
+    <a href="/">Ana Sayfa</a>
+    <a href="/analiz">Veri Analizi</a>
+    <a href="/karar">Karar Destek</a>
+    <a href="/sonuc" class="active">Sonuclar</a>
+</div>
+
+<div class="container">
+    <h2>Genel Degerlendirme ve Sonuclar</h2>
+
+    <div class="kutu">
+        <h3>Matris Carpimi Sonucu</h3>
+        <p>Agirliklandirilmis ticaret hacmi (matris carpimi ile): <b>{{ "{:,.0f}".format(matris_sonuc) }}</b></p>
+        <p style="font-size: 13px; color: #666;">Bu deger, ihracat ve ithalat matrislerinin carpimiyla elde edilmistir. 
+        Matris carpimi lineer cebirde onemli bir islemdir ve ticaret hacminin hesaplanmasinda kullanilmistir.</p>
+    </div>
+
+    <div class="grafik">
+        <h2>Korelasyon Isi Haritasi</h2>
+        <img src="{{ url_for('static', filename='korelasyon.png') }}" alt="Korelasyon">
+    </div>
+
+    <div class="kutu">
+        <h3>Korelasyon Analizi</h3>
+        <p>Degiskenler arasindaki iliskiler:</p>
+        <table>
+            <tr><th>Degisken 1</th><th>Degisken 2</th><th>Korelasyon</th><th>Iliski</th></tr>
+            {% for satir in korelasyon %}
+            <tr>
+                <td>{{ satir.degisken1 }}</td>
+                <td>{{ satir.degisken2 }}</td>
+                <td><b>{{ satir.deger }}</b></td>
+                <td>
+                    {% if satir.deger|abs > 0.7 %}
+                        <span style="color: green;">Guclu</span>
+                    {% elif satir.deger|abs > 0.4 %}
+                        <span style="color: orange;">Orta</span>
+                    {% else %}
+                        <span style="color: gray;">Zayif</span>
+                    {% endif %}
+                    {% if satir.deger > 0 %}
+                        <span style="color: green;">(+)</span>
+                    {% else %}
+                        <span style="color: red;">(-)</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="kutu">
+        <h3>Genel Degerlendirme</h3>
+        <p>Turkiye'nin dis ticaret verileri uzerinde yapilan analizler sonucunda:</p>
+        <ul>
+            <li>Ihracat ve ithalat arasinda guclu pozitif iliski bulunmustur.</li>
+            <li>Doviz kuru ihracati ithalattan daha fazla etkilemektedir.</li>
+            <li>Ticaret acigi enerji ithalati ve ara mali ithalatindan kaynaklanmaktadir.</li>
+            <li>Almanya en buyuk ihracat pazari olmaya devam etmektedir.</li>
+        </ul>
+    </div>
+
+    <div class="kutu">
+        <h3>Tavsiyeler</h3>
+        <div class="oneri"><b>1.</b> Yüksek teknoloji urunlerinin ihracat payi artirilmali.</div>
+        <div class="oneri"><b>2.</b> AB'ye bagimlilik azaltilarak pazar cesitlendirmesi yapilmali.</div>
+        <div class="oneri"><b>3.</b> Doviz kuru dalgalanmalarina karsi korunma mekanizmalari gelistirilmeli.</div>
+        <div class="oneri"><b>4.</b> Enerji ithalatini azaltmak icin yenilenebilir enerji yatirimlari artirilmali.</div>
+        <div class="oneri"><b>5.</b> KOBİ'lerin ihracata yonlendirilmesi icin devlet destekleri artirilmali.</div>
+    </div>
+</div>
+
+<div class="footer">
+    <p>Linear Cebir Donem Projesi &copy; 2025</p>
+</div>
+
+</body>
+</html>

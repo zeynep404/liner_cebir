@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Dis Ticaret Karar Destek Sistemi</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f4f4f4; }
+        .menu { background: #2c3e50; padding: 15px; text-align: center; }
+        .menu a { color: white; text-decoration: none; padding: 12px 25px; margin: 0 5px; display: inline-block; }
+        .menu a:hover { background: #34495e; border-radius: 5px; }
+        .menu a.active { background: #3498db; border-radius: 5px; }
+        .header { background: #2c3e50; color: white; text-align: center; padding: 40px 20px; }
+        .header h1 { margin: 0; font-size: 32px; }
+        .header p { font-size: 16px; opacity: 0.8; }
+        .container { max-width: 1100px; margin: 20px auto; padding: 0 15px; }
+        .kartlar { display: flex; flex-wrap: wrap; gap: 15px; margin: 20px 0; }
+        .kart { background: white; border-radius: 8px; padding: 20px; flex: 1; min-width: 200px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .kart h3 { margin: 0 0 5px 0; font-size: 24px; color: #2c3e50; }
+        .kart p { margin: 0; color: #666; font-size: 13px; }
+        .kart .degisim { font-size: 12px; margin-top: 5px; }
+        .yesil { color: green; }
+        .kirmizi { color: red; }
+        .mavi { color: #3498db; }
+        .aciklama { background: white; border-radius: 8px; padding: 25px; margin: 20px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .aciklama h2 { color: #2c3e50; margin-top: 0; }
+        .aciklama p { line-height: 1.6; color: #444; }
+        .grafik { background: white; border-radius: 8px; padding: 15px; margin: 20px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; }
+        .grafik img { max-width: 100%; height: auto; }
+        .footer { background: #2c3e50; color: white; text-align: center; padding: 15px; margin-top: 30px; font-size: 13px; }
+        @media (max-width: 600px) { .kart { min-width: 100%; } }
+    </style>
+</head>
+<body>
+
+<div class="menu">
+    <a href="/" class="active">Ana Sayfa</a>
+    <a href="/analiz">Veri Analizi</a>
+    <a href="/karar">Karar Destek</a>
+    <a href="/sonuc">Sonuclar</a>
+</div>
+
+<div class="header">
+    <h1>Dis Ticaret Karar Destek Sistemi</h1>
+    <p>Turkiye'nin dis ticaret verilerini analiz eden sistem</p>
+</div>
+
+<div class="container">
+    <div class="kartlar">
+        <div class="kart">
+            <h3 class="mavi">{{ "{:,.0f}".format(istatistik.toplam_ihracat) }}</h3>
+            <p>Toplam Ihracat (Milyon $)</p>
+            <div class="degisim {% if istatistik.ihracat_degisim > 0 %}yesil{% else %}kirmizi{% endif %}">
+                {% if istatistik.ihracat_degisim > 0 %}+{% endif %}{{ istatistik.ihracat_degisim }}%
+            </div>
+        </div>
+        <div class="kart">
+            <h3 class="kirmizi">{{ "{:,.0f}".format(istatistik.toplam_ithalat) }}</h3>
+            <p>Toplam Ithalat (Milyon $)</p>
+            <div class="degisim {% if istatistik.ithalat_degisim > 0 %}kirmizi{% else %}yesil{% endif %}">
+                {% if istatistik.ithalat_degisim > 0 %}+{% endif %}{{ istatistik.ithalat_degisim }}%
+            </div>
+        </div>
+        <div class="kart">
+            <h3 style="color: #f39c12;">{{ "{:,.0f}".format(istatistik.ticaret_dengesi) }}</h3>
+            <p>Ticaret Dengesi (Milyon $)</p>
+            <div class="degisim">{{ istatistik.son_yil }} Yili</div>
+        </div>
+        <div class="kart">
+            <h3 style="color: #9b59b6;">{{ "{:,.0f}".format(istatistik.ticaret_hacmi) }}</h3>
+            <p>Ticaret Hacmi (Milyon $)</p>
+            <div class="degisim">{{ istatistik.son_yil }} Yili</div>
+        </div>
+    </div>
+
+    <div class="aciklama">
+        <h2>Proje Hakkinda</h2>
+        <p>Bu projede Turkiye'nin 2015-2025 yillari arasindaki dis ticaret verileri analiz edilmistir. 
+           Veriler kullanilarak ihracat ve ithalat trendleri incelenmis, lineer cebir yontemlerinden 
+           matris olusturma, matris carpimi ve korelasyon analizi kullanilmistir.</p>
+        <p>Amac: Kullaniciya ulke ve urun bazinda ticaret potansiyeli gosteren, risk analizi yapan 
+           ve stratejik oneriler sunan bir karar destek sistemi gelistirmektir.</p>
+        <p><strong>Kullanilan Yontemler:</strong></p>
+        <ul>
+            <li><strong>Matris Olusturma:</strong> Ulkeler ve yillara gore 10x11 boyutunda ihracat ve ithalat matrisleri olusturuldu.</li>
+            <li><strong>Matris Carpimi:</strong> Agirliklandirilmis ticaret hacmi hesaplandi.</li>
+            <li><strong>Korelasyon Analizi:</strong> Degiskenler arasindaki iliskiler incelendi.</li>
+        </ul>
+    </div>
+
+    <div class="grafik">
+        <h2>Ihracat ve Ithalat Trendleri</h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 15px;">
+            <div style="flex: 1; min-width: 300px;">
+                <img src="{{ url_for('static', filename='ihracat_trend.png') }}" alt="Ihracat">
+            </div>
+            <div style="flex: 1; min-width: 300px;">
+                <img src="{{ url_for('static', filename='ithalat_trend.png') }}" alt="Ithalat">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    <p>Linear Cebir Donem Projesi &copy; 2025</p>
+</div>
+
+</body>
+</html>
